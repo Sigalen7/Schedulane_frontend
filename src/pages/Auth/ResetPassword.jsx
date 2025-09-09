@@ -123,18 +123,19 @@ export default function ResetPassword({ onAlert }) {
 
   return (
     <Box className="rp-bg">
-      {/* Brand header */}
-      <Box className="rp-brand">
+      {/* Centered brand header */}
+      <Box className="rp-brand centered">
         <Box className="rp-brand-dot" />
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700, letterSpacing: 0.2 }}>
+          <Typography variant="h3" className="rp-title">
             Schedulane
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body1" className="rp-subtitle">
             Plan by taste, time & weather
           </Typography>
         </Box>
       </Box>
+
 
       <Container maxWidth="sm" sx={{ px: 0 }}>
         <Card elevation={0} className="rp-card">
