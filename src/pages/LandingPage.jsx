@@ -91,7 +91,7 @@ export default function LandingPage() {
         
         <div className="hero-sub">Plan your trip with us.</div>
         <div className="hero-cta">
-          <Link to="/questionnaire" className="pill-btn">Get Started <span className="arrow">→</span></Link>
+          <Link to="/trip-input" className="pill-btn">Get Started <span className="arrow">→</span></Link>
           <a href="#learn-more" onClick={handleLearnMore} className="pill-btn">Learn More <span className="arrow">→</span></a>
         </div>
       </section>

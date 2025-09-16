@@ -85,17 +85,14 @@ html, body { height: 100%; margin: 0; }
 }
 .hero-brand {
   margin: 0 0 12px;
-  line-height: 1.00;
-  font-weight: 1000;
+  line-height: 1.05;
+  font-weight: 500;
   font-size: clamp(48px, 12vw, 150px);
   font-family: "Times New Roman", Georgia, serif;
-  background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  filter: drop-shadow(0 10px 30px rgba(0,0,0,.35));
+  color: white;   /* change text color */
 }
+
+
 .hero-sub {
   letter-spacing: .25em;
   font-size: clamp(14px, 3vw, 28px);

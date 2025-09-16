@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
-import QuestionnairePage from "./pages/Scheduler/QuestionnairePage";
 import SignInPage from "./pages/Auth/Login";
 import SignUpPage from "./pages/Auth/Register";
 import Profile from "./pages/Auth/Profile";
@@ -10,7 +9,8 @@ import JournalView from "./pages/Journal/JournalView";
 import PublicReviewsPage from "./pages/PublicReviewsPage";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import ChangePassword from "./pages/Auth/ChangePassword";
-
+import TripInputPage from "./pages/Scheduler/TripInputPage";
+import ItineraryPage from './pages/Scheduler/ItineraryPage';
 
 
 
@@ -34,7 +34,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/questionnaire" element={<QuestionnairePage />} />
         <Route path="/signin" element={<GuestRoute><SignInPage onAlert={showAlert} /></GuestRoute>}/>
         <Route path="/signup" element={<GuestRoute><SignUpPage onAlert={showAlert} /></GuestRoute> }/>
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute> }/>
@@ -44,6 +43,9 @@ function App() {
         <Route path="/reviews" element={<PublicReviewsPage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/profile/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+        <Route path="/trip-input" element={<TripInputPage />} />
+        <Route path="/itinerary" element={<ItineraryPage />} />
+
         
       </Routes>
     </Router>
