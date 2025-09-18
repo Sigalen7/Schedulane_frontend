@@ -1,4 +1,3 @@
-// src/pages/Journal/Addjounal.jsx
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../utils/apiClient";
@@ -220,9 +219,6 @@ export default function Addjounal() {
   }
 
 
-  // -----------------
-  // Reviews state (unchanged behavior)
-  // -----------------
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");

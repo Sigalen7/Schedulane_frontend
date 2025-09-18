@@ -52,15 +52,12 @@ const Profile = () => {
     );
   }
 
-  // ---- Name logic: prefer username, then first+last, else Traveler
- // support either shape
-  // ---- Name logic: prefer API username, else JWT claim, else first+last, else Traveler
+
   function usernameFromJWT() {
       try {
         const t = localStorage.getItem("token");
         if (!t) return "";
         const payload = JSON.parse(atob(t.split(".")[1] || ""));
-        // Common claim keys your backend might use:
         return (
           payload.username ||
           payload.user ||
@@ -74,8 +71,8 @@ const Profile = () => {
     }
 
   const apiUsername =
-    profile?.user?.username ?? // if backend returns nested user
-    profile?.username ??       // if backend puts it at top-level
+    profile?.user?.username ?? 
+    profile?.username ??      
     "";
 
   const jwtUsername = usernameFromJWT();
@@ -163,7 +160,6 @@ const Profile = () => {
               <span style={S.v}>{birthdate}</span>
             </div>
 
-            {/* Empty states can live here later (saved places, stats, etc.) */}
           </div>
         </div>
       </div>
@@ -171,7 +167,7 @@ const Profile = () => {
   );
 };
 
-/* ===== Styles (inline, no external CSS) ===== */
+/* ===== Styles  ===== */
 const S = {
   container: {
     display: "flex",

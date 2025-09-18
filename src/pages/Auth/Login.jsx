@@ -1,4 +1,3 @@
-// src/pages/Auth/Login.jsx
 import React, { useState } from "react";
 import {
   Container,
@@ -46,7 +45,6 @@ const Login = ({ onAlert }) => {
       });
       const token = response.data.access;
       localStorage.setItem("token", token);
-      // You already navigate to profile on success
       navigate("/profile");
     } catch (error) {
       if (error.response?.status === 401) {
@@ -76,7 +74,6 @@ const Login = ({ onAlert }) => {
         placeItems: "start center",
         alignContent: "start",
         p: { xs: 3, sm: 6 },
-        // background like the screenshot (blue ↔ pink + soft base)
         background:
           "radial-gradient(1200px 800px at 20% 10%, #0ea5e9, transparent 60%), radial-gradient(1200px 900px at 90% 90%, #f472b6, transparent 60%), linear-gradient(135deg,#f8fafc,#eef2ff)",
       }}
@@ -241,8 +238,6 @@ const Login = ({ onAlert }) => {
                 </Divider>
               </Box>
 
-              {/* (Optional) If you don’t want any OAuth button, just leave the divider as a visual element */}
-              {/* You said backend is already working; no OAuth wiring needed here. */}
             </Box>
 
             {/* Footnote */}

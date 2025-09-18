@@ -1,4 +1,3 @@
-// src/pages/Auth/ResetPassword.jsx
 import React, { useEffect, useState } from "react";
 import {
   Container,
@@ -9,7 +8,7 @@ import {
   Typography,
   Box,
   InputAdornment,
-  IconButton, // <-- important
+  IconButton, 
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -192,7 +191,7 @@ export default function ResetPassword({ onAlert }) {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="new-password"
-                      slotProps={{ input: { minLength: 8 } }} // modern MUI replacement for inputProps
+                      slotProps={{ input: { minLength: 8 } }} 
                       error={tooShort}
                       helperText={tooShort ? "Use at least 8 characters." : " "}
                       InputProps={{

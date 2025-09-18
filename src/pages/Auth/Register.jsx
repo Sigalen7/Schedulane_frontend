@@ -1,4 +1,3 @@
-// src/pages/Auth/Register.jsx
 import React, { useState } from "react";
 import {
   Container,
@@ -21,7 +20,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../../styles/auth.css"; // same file used by the Login page
+import "../../styles/auth.css"; 
 
 const Register = ({ onAlert }) => {
   const navigate = useNavigate();
@@ -258,7 +257,6 @@ const Register = ({ onAlert }) => {
               <Box sx={{ my: 2 }}>
                 <Divider>
                   <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {/* keeps layout spacing similar to login */}
                   </Typography>
                 </Divider>
               </Box>

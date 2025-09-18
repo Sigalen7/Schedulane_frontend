@@ -1,19 +1,15 @@
-// src/pages/Journal/JournalView.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import apiClient from "../../utils/apiClient";
 
-/* ---------- helpers ---------- */
 const toDate = (v) => {
   try { return new Date(v).toLocaleString(); } catch { return "—"; }
 };
 const getPhotoUrl = (p) => {
-  // be tolerant of different serializer shapes
   if (!p) return "";
   return p.url || p.image || p.file || p.path || p.src || (typeof p === "string" ? p : "");
 };
 
-/* ---------- lightweight lightbox ---------- */
 function Lightbox({ open, photos, start = 0, title, onClose }) {
   const [i, setI] = useState(start);
   useEffect(() => setI(start), [start]);
@@ -74,7 +70,7 @@ const AllJournalEntries = () => {
       return;
     }
     fetchJournalEntries(currentPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [currentPage, navigate]);
 
   const fetchJournalEntries = async (page) => {
@@ -86,7 +82,6 @@ const AllJournalEntries = () => {
       const response = await apiClient.get("/journal/travel-journal/", { params: { limit, offset } });
       const results = response.data.results ?? [];
 
-      // normalize photos to an array
       const normalized = results.map((r) => ({
         ...r,
         photos: r.photos || r.images || r.image_set || [],
@@ -232,7 +227,7 @@ const AllJournalEntries = () => {
   );
 };
 
-/* ---------- styles (vanilla, no libs) ---------- */
+/* ---------- styles ---------- */
 const ui = {
   page: { minHeight: "100vh", background: "linear-gradient(#f8fafc, #ffffff)" },
   headerBar: {
@@ -295,10 +290,3 @@ const lb = {
 };
 
 export default AllJournalEntries;
-
-/* keyframes for skeleton (add once globally if you like)
-@keyframes shimmer {
-  0% { background-position: 100% 0; }
-  100% { background-position: 0 0; }
-}
-*/

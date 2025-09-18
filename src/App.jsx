@@ -19,7 +19,6 @@ const ProtectedRoute = ({ children }) => {
   return token ? children : <Navigate to="/signin" replace />;
 };
 
-// (Optional) Block auth pages if already signed in
 const GuestRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   return token ? <Navigate to="/profile" replace /> : children;

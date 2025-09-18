@@ -53,7 +53,6 @@ export default function LandingPage() {
   }, [showSplash]);
   const skipSplash = () => setShowSplash(false);
 
-  // Learn-more behavior: scroll to About (do NOT open/scroll services)
   const aboutRef = useRef(null);
   const handleLearnMore = (e) => {
     e.preventDefault();
@@ -68,10 +67,9 @@ export default function LandingPage() {
         <h1 className="splash-brand"><span className="splash-text">Schedulane</span></h1>
       </div>
 
-      {/* Fixed background video + scrim */}
       <video
         className="lp__video"
-        src="/videos/bg_video.mp4"  // keep here or import from src/assets and use src={heroVideo}
+        src="/videos/bg_video.mp4"  
         autoPlay muted loop playsInline preload="auto"
       />
       <div className="lp__scrim" aria-hidden="true" />

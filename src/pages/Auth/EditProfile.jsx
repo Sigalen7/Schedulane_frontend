@@ -1,4 +1,3 @@
-// src/pages/Auth/EditProfile.jsx
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../utils/apiClient";
@@ -146,7 +145,6 @@ export default function EditProfile({ onUpdated }) {
     };
   }, [photoPreview]);
 
-  // ---------- DESIGN-ONLY CHANGES BELOW ----------
   if (loading) {
     return (
       <div className="min-h-[60vh] grid place-items-center px-6">

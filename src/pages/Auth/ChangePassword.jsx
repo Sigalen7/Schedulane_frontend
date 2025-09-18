@@ -1,4 +1,3 @@
-// src/pages/Auth/ChangePassword.jsx
 import React, { useState } from "react";
 import {
   Container,
@@ -18,7 +17,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../utils/apiClient"; // axios instance with Bearer token
 
-// ---------- helpers (unchanged logic) ----------
+
 function extractMsg(d) {
   if (!d) return "";
   if (typeof d === "string") return d;
@@ -121,7 +120,6 @@ export default function ChangePassword({ onAlert }) {
     }
   }
 
-  // ---------- DESIGN ONLY (clean, modern) ----------
   return (
     <Box
       sx={{
