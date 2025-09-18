@@ -1,5 +1,5 @@
 export const connectItineraryWebSocket = (onUpdate, initialData) => {
-  const ws = new WebSocket("ws://127.0.0.1:9000/ws/itinerary");
+  const ws = new WebSocket("wss://tueniuu-itinerary-recommender-api.hf.space/ws/itinerary");
 
   ws.onopen = () => {
     console.log("Connected to itinerary WebSocket");

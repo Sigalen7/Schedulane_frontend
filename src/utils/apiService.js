@@ -49,10 +49,9 @@ const transformApiResponse = (apiData) => {
 };
 
 
-
 // This function makes the actual POST request to your backend
 export const generateItinerary = async (requestBody) => {
-  const API_ENDPOINT = "http://127.0.0.1:8000/schedule";
+  const API_ENDPOINT = "https://tueniuu-itinerary-recommender-api.hf.space/schedule";
 
   try {
     const response = await fetch(API_ENDPOINT, {
