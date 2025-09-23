@@ -7,7 +7,8 @@ import ExpandedItemView from '../../components/ExpandedItemView'; // Import the 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { connectItineraryWebSocket } from "../../utils/itineraryApi";
 import GeminiChat from "../../components/GeminiChat";
-import "../../styles/app2.css";  
+import "../../styles/itinerary.css";
+
 
 
 

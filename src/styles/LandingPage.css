@@ -133,20 +133,16 @@ html, body { height: 100%; margin: 0; }
 .lp__rest {
   position: relative;
   z-index: 2;    /* above video */
-  background: #fff;
-  color: #111;
+  background: transparent; /* let video show through */
+  color: #fff;             /* switch text to white for readability */
 }
-.lp__rest::before {
-  content: "";
-  position: absolute;
-  top: -80px; left: 0; right: 0; height: 80px;
-  background: linear-gradient(180deg, rgba(0,0,0,.55), #fff);
-}
+
+
 
 /* ===== SERVICES (your existing styles) ===== */
 .svc-section {
   padding: 60px 20px 90px;
-  background: #f8f9fb;
+  background: transparent;
 }
 
 .svc-head {
@@ -157,7 +153,7 @@ html, body { height: 100%; margin: 0; }
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  color: #111416;
+  color: #fff; 
 }
 .svc-head h2 { margin: 0; font-size: clamp(20px, 3vw, 28px); }
 .svc-head p { margin: 0; color: #5b5f66; }
@@ -176,19 +172,34 @@ html, body { height: 100%; margin: 0; }
   position: relative;
   overflow: hidden;
   min-height: 260px;
-  background:
-    radial-gradient(200px 120px at 20% 0%, #f2f6ff, transparent 60%),
-    #fcfcfd;
-  border: 1px solid #eceef1;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 22px;
   box-shadow: 0 10px 30px rgba(0,0,0,.08);
   cursor: pointer;
   transition: transform .2s ease, box-shadow .2s ease;
 }
-.svc-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.12); }
+.svc-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.12); 
+}
 
-.svc-face { position: absolute; inset: 0; display: grid; place-items: center; padding: 22px; }
-.svc-title { margin: 0; text-align: center; font-size: clamp(18px, 2.3vw, 22px); }
+.svc-face { 
+  position: absolute; 
+  inset: 0; display: grid; 
+  place-items: center; 
+  padding: 22px; 
+  transition: opacity .2s ease, visibility .2s ease;
+}
+
+.svc-title {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(18px, 2.3vw, 22px);
+  color: #fff; 
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6); 
+}
+
 
 .svc-overlay {
   position: absolute; inset: 0;
@@ -198,7 +209,14 @@ html, body { height: 100%; margin: 0; }
 }
 .svc-card:hover .svc-overlay,
 .svc-card:focus .svc-overlay,
-.svc-card:focus-visible .svc-overlay { opacity: 1; }
+.svc-card:focus-visible .svc-overlay {   opacity: 1; }
+
+.svc-card:hover .svc-face,
+.svc-card:focus-within .svc-face {
+  opacity: 0;
+  visibility: hidden;
+}
+
 
 .svc-overlay-title { margin: 0; font-size: clamp(18px, 2.2vw, 22px); }
 .svc-overlay-desc  { margin: 0; font-size: 14px; line-height: 1.6; color: #e7ece9; }
@@ -211,7 +229,7 @@ html, body { height: 100%; margin: 0; }
 .splash {
   position: fixed;
   inset: 0;
-  background: #fff; /* black */
+  background: #fff; 
   display: flex;
   justify-content: center;
   align-items: center;

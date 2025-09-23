@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import apiClient from "../../utils/apiClient";
 import "../../styles/journal.css";
 
+
+
 function toTagArray(s) {
   if (Array.isArray(s)) return s;
   return (s || "")
@@ -62,7 +64,13 @@ function Textarea(props) {
 }
 
 export default function Addjounal() {
+  
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.body.classList.add("journal-page");
+    return () => document.body.classList.remove("journal-page");
+  }, []);
 
   // -----------------
   // Journals state
@@ -288,7 +296,7 @@ export default function Addjounal() {
   const isEmpty = useMemo(() => !loading && journals.length === 0, [loading, journals]);
 
   return (
-    <div className="page">
+    <div className="page journal">
       {/* Page header */}
       <header className="page__head">
         <h1 className="page__title">My Journals</h1>
@@ -381,7 +389,7 @@ export default function Addjounal() {
                       <div>
                         <h3 className="card__title">{j.title}</h3>
                         <p className="card__meta">
-                          {(j.trip ? j.trip.name : "No Trip")} · {new Date(j.created).toLocaleString()}
+                          {j.title} · {new Date(j.created).toLocaleString()}
                         </p>
                       </div>
                       <div className="btn-row">
@@ -543,15 +551,7 @@ export default function Addjounal() {
                           Rating {r.rating}/10 {r.recommended ? "· Recommended" : ""}
                         </h3>
                         <p className="card__meta">
-                          {(() => {
-                            const tripLabel =
-                              r.trip == null
-                                ? "No Trip"
-                                : typeof r.trip === "object"
-                                ? r.trip.name || `Trip #${r.trip.id ?? ""}`
-                                : `Trip #${r.trip}`;
-                            return `${tripLabel} · ${new Date(r.date || r.created).toLocaleString()}`;
-                          })()}
+                          {new Date(r.date || r.created).toLocaleString()}
                         </p>
                       </div>
                       <div className="btn-row">

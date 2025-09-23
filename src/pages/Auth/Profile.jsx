@@ -103,7 +103,7 @@ const Profile = () => {
             <h2 style={S.title}>Profile</h2>
           </div>
           <div style={S.actions}>
-            <Link to="/questionnaire" style={{ ...S.pillBtn, ...S.primaryBtn }}>
+            <Link to="/trip-input" style={{ ...S.pillBtn, ...S.primaryBtn }}>
               New Trip
             </Link>
             <Link to="/journal" style={S.pillBtn}>
