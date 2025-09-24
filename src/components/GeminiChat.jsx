@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-import ReactMarkdown from 'https://esm.run/react-markdown';
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai@0.11.2"
+import ReactMarkdown from 'react-markdown';
 
-// Initialize the Google AI model with your API key
-const genAI = new GoogleGenerativeAI("your-api-key-here");
+const genAI  = new GoogleGenerativeAI("AIzaSyAudsgrXGtOjXttSxpCKbcYLMK1fXgZv0U");
 
-const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message..." }) => {
+const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message...", itineraryContext = "" }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -21,109 +20,86 @@ const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message..." }) => {
     if (!input.trim() || isLoading) return;
 
     setIsLoading(true);
-    let newMessages = [...messages, { role: "user", content: input }];
-    if (newMessages.length > maxMemory) newMessages.shift();
+    const newMessages = [...messages, { role: "user", content: input }];
     setMessages(newMessages);
     setInput("");
 
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-      const prompt = newMessages.map((msg) => `${msg.role}: ${msg.content}`).join("\n");
+
+      // CHANGE 2: Create a full prompt including the itinerary context as a system instruction.
+      // This gives the AI the information it needs to answer questions accurately.
+      const systemInstruction = `You are an expert travel assistant. The user has the following itinerary and might ask questions about it. Use this context to provide helpful answers.\n\n--- ITINERARY START ---\n${itineraryContext}\n--- ITINERARY END ---\n\n`;
       
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const aiReply = response.text();
+      const promptHistory = newMessages.map((msg) => `${msg.role}: ${msg.content}`).join("\n");
+      const fullPrompt = systemInstruction + promptHistory;
+      
+      const result = await model.generateContent(fullPrompt);
+      const response = result.response;
+
+      // CHANGE 3: The Fix for the Error
+      // Instead of response.text(), access the text directly from the candidate parts.
+      // This is a more reliable way to get the string content and avoids the "Objects are not valid" error.
+      const aiReply = response.candidates[0].content.parts[0].text;
+      
+      // Add a console log to verify you are getting a string
+      console.log("AI Reply Type:", typeof aiReply);
+      console.log("AI Reply Content:", aiReply);
 
       let updatedMessages = [...newMessages, { role: "assistant", content: aiReply }];
       if (updatedMessages.length > maxMemory) updatedMessages.shift();
       setMessages(updatedMessages);
+
     } catch (err) {
       console.error("AI Error:", err);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Sorry, I couldn't get a response. Please try again." },
-      ]);
+      // Ensure the error message is also handled correctly
+      const updatedMessages = [
+        ...newMessages,
+        { role: "assistant", content: "Sorry, I couldn't get a response. Please check the console for errors." },
+      ];
+      setMessages(updatedMessages);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") sendMessage();
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
   };
 
   return (
     <>
       <style>{`
-        .gemma-chat-container {
-          background: white;
-          border: none;
-          border-radius: 1rem;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .gemma-chat-box {
-          background: white;
-        }
-
-        /* Minimalistic Scrollbar Styling */
-        .gemma-chat-box::-webkit-scrollbar {
-          width: 5px;
-        }
+        /* Your existing styles are fine, no changes needed here */
+        .gemma-chat-container { background: white; border: none; border-radius: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .gemma-chat-box { background: white; }
+        .gemma-chat-box::-webkit-scrollbar { width: 5px; }
         .gemma-chat-box::-webkit-scrollbar-track { background: transparent; }
         .gemma-chat-box::-webkit-scrollbar-thumb { background: #dddddd; border-radius: 10px; }
         .gemma-chat-box::-webkit-scrollbar-thumb:hover { background: #bbbbbb; }
-
-        .gemma-msg .gemma-bubble {
-          max-width: 75%;
-          word-wrap: break-word;
-          font-size: 0.95rem;
-          line-height: 1.4;
-          transition: all 0.2s ease-in-out;
-        }
-
-        .gemma-user {
-          background: #F3E9DC;
-          color: #212529;
-          border-radius: 20px;
-          box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .gemma-ai {
-          background: transparent;
-          box-shadow: none;
-          padding: 0;
-          max-width: 100%;
-          width: 100%;
-        }
-
-        .markdown-content {
-          color: #343a40;
-          font-size: 0.95rem;
-          line-height: 1.6;
-          text-align: left;
-        }
+        .gemma-msg .gemma-bubble { max-width: 75%; word-wrap: break-word; font-size: 0.95rem; line-height: 1.4; transition: all 0.2s ease-in-out; }
+        .gemma-user { background: #F3E9DC; color: #212529; border-radius: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .gemma-ai { background: transparent; box-shadow: none; padding: 0; max-width: 100%; width: 100%; }
+        .markdown-content { color: #343a40; font-size: 0.95rem; line-height: 1.6; text-align: left; }
         .markdown-content p:last-child { margin-bottom: 0; }
         .markdown-content h1, .markdown-content h2, .markdown-content h3 { margin-top: 1rem; margin-bottom: 0.5rem; }
         .markdown-content ul, .markdown-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
         .markdown-content code { background-color: #f1f3f5; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: monospace; }
         .markdown-content pre { background-color: #f1f3f5; padding: 1rem; border-radius: 8px; overflow-x: auto; }
-
         .gemma-input { border: 1px solid #dee2e6; padding-left: 1rem; font-size: 1rem; }
         .gemma-input:focus { box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); }
-
         .gemma-send-btn { background-color: #007bff; border: none; transition: background-color 0.2s ease; }
         .gemma-send-btn:hover { background-color: #0056b3; }
         .gemma-send-btn:disabled { background-color: #a0c7ff; cursor: not-allowed; }
-
         .gemma-input-container { border-top: none !important; }
-
         .typing-indicator { display: flex; align-items: center; justify-content: center; width: 100%; padding: 0.5rem 0.75rem; }
         .typing-indicator .dot-container { background: #e9ecef; border-radius: 1.25rem; padding: 0.75rem 1rem;}
         .typing-indicator span { height: 8px; width: 8px; background-color: #adb5bd; border-radius: 50%; display: inline-block; margin: 0 2px; animation: bounce 1.4s infinite ease-in-out both; }
         .typing-indicator span:nth-of-type(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-of-type(2) { animation-delay: -0.16s; }
-
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
       `}</style>
 
@@ -133,7 +109,7 @@ const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message..." }) => {
             <div
               key={idx}
               className={`gemma-msg mb-3 d-flex ${
-                msg.role === "user" ? "justify-content-end" : "justify-content-center"
+                msg.role === "user" ? "justify-content-end" : "justify-content-start" // Align AI messages left
               }`}
             >
               <div
@@ -141,14 +117,12 @@ const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message..." }) => {
                   msg.role === "user" ? "gemma-user p-3" : "gemma-ai"
                 }`}
               >
-                {msg.role === 'user' && (
+                {msg.role === 'user' ? (
                   <>
                     <div className="small fw-bold mb-1">You</div>
                     <div>{msg.content}</div>
                   </>
-                )}
-                
-                {msg.role === 'assistant' && (
+                ) : (
                   <div className="markdown-content">
                     <ReactMarkdown>{msg.content}</ReactMarkdown>
                   </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import ItineraryItem from "../../ItineraryItem";
 import WeatherCard from "../../WeatherCard";
@@ -18,6 +18,22 @@ function ItineraryPage() {
   const [selectedItem, setSelectedItem] = useState(null); // New state for selected item
   const [summaryText, setSummaryText] = useState(pageData?.summaryText || "");
   const [selectedItemNumber, setSelectedItemNumber] = useState(null);
+
+    // Add this entire block to your ItineraryPage component
+  const itineraryContext = useMemo(() => {
+    if (!pageData || !pageData.fullItinerary) return "";
+
+    // Helper to format a single day's itinerary
+    const formatDay = (day) => {
+      const items = day.items.map(item => 
+        `  - ${item.name}: ${item.description}`
+      ).join('\n');
+      return `Day ${day.day}:\n${items}`;
+    };
+
+    // Combine all days into a single string
+    return pageData.fullItinerary.map(formatDay).join('\n\n');
+  }, [pageData]);
 
   useEffect(() => {
     if (!pageData) return;
@@ -161,9 +177,7 @@ const initialData = {
           <ExpandedItemView 
           item={selectedItem}
           listNumber={selectedItemNumber}
-          onClose={handleCloseExpandedView
-
-          } 
+          onClose={handleCloseExpandedView} 
         />
         </>
       )}
@@ -203,7 +217,7 @@ const initialData = {
       padding: "10px", // breathing space
     }}
   >
-    <GeminiChat />
+    <GeminiChat itineraryContext={itineraryContext} /> 
   </div>
 </div>
     </>
