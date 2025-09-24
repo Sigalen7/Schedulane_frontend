@@ -13,7 +13,7 @@ const getWeatherIcon = (condition) => {
   return '🌫️';
 };
 
-function ExpandedItemView({ item, onClose }) {
+function ExpandedItemView({ item, onClose, listNumber }) {
   if (!item) return null;
 
   const handleCardClick = (e) => e.stopPropagation();
@@ -26,7 +26,7 @@ function ExpandedItemView({ item, onClose }) {
         <div className="eiv-content-col">
           <div className="eiv-item-info">
             <div className="eiv-header">
-              <span className="eiv-number">{item.id}</span>
+              <span className="eiv-number">{listNumber}</span>
               <h2 className="eiv-title">{item.title}</h2>
 
               {/* Quick Links next to the title */}

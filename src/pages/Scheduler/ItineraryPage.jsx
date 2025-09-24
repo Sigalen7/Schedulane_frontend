@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import ItineraryItem from "../../ItineraryItem";      // <-- up two levels
-import WeatherCard from "../../WeatherCard";          // <-- up two levels
+import ItineraryItem from "../../ItineraryItem";
+import WeatherCard from "../../WeatherCard";
 import InteractiveMap from "../../InteractiveMap"; 
-import ExpandedItemView from '../../components/ExpandedItemView'; // Import the new component
+import ExpandedItemView from '../../components/ExpandedItemView'; 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { connectItineraryWebSocket } from "../../utils/itineraryApi";
 import GeminiChat from "../../components/GeminiChat";
 import "../../styles/itinerary.css";
-
-
-
 
 function ItineraryPage() {
   const location = useLocation();
@@ -20,7 +17,7 @@ function ItineraryPage() {
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState(null); // New state for selected item
   const [summaryText, setSummaryText] = useState(pageData?.summaryText || "");
-
+  const [selectedItemNumber, setSelectedItemNumber] = useState(null);
 
   useEffect(() => {
     if (!pageData) return;
@@ -37,7 +34,7 @@ const initialData = {
     itinerary: day.items.map(item => ({
       id: item.id,
       name: item.name,
-      description: item.description,   // send the full description
+      description: item.description,
       lat: item.lat,
       lon: item.lon,
       weather: item.weather || null
@@ -53,12 +50,14 @@ const initialData = {
   }, [pageData]);
 
 
-  const handleItemClick = (item) => {
+  const handleItemClick = (item, listNumber) => {
     setSelectedItem(item);
+    setSelectedItemNumber(listNumber);
   };
 
   const handleCloseExpandedView = () => {
     setSelectedItem(null);
+    setSelectedItemNumber(null);
   };
 
   const handlePrevDay = () => {
@@ -89,7 +88,7 @@ const initialData = {
           <Col md={5} className="itinerary-list-col">
             <Card.Body>
               <div className="itinerary-items-container">
-                {currentItinerary.items.map((item) => {
+                {currentItinerary.items.map((item, index) => {
                   // Only truncate description for list view
                   const sentences = item.description.split('. ');
                   const firstTwo = sentences.slice(0, 2).join('. ') + (sentences.length >= 2 ? '.' : '');
@@ -97,8 +96,9 @@ const initialData = {
                   return (
                     <ItineraryItem
                       key={`${currentDayIndex}-${item.id}`}
-                      item={{ ...item, description: firstTwo }} // truncated for list
-                      onClick={() => handleItemClick(item)} // pass full item to expanded view
+                      item={{ ...item, description: firstTwo }}
+                      listNumber={index + 1}
+                      onClick={() => handleItemClick(item, index + 1)} 
                     />
                   );
                 })}
@@ -111,7 +111,7 @@ const initialData = {
                 >
                   &lt;
                 </button>
-                <span> DAY {currentItinerary.day} </span>
+                <span> DAY {currentDayIndex + 1} </span>
                 <button
                   className="day-arrow"
                   onClick={handleNextDay}
@@ -158,7 +158,13 @@ const initialData = {
       {selectedItem && (
         <>
           {console.log("Data for expanded view:", selectedItem)}
-          <ExpandedItemView item={selectedItem} onClose={handleCloseExpandedView} />
+          <ExpandedItemView 
+          item={selectedItem}
+          listNumber={selectedItemNumber}
+          onClose={handleCloseExpandedView
+
+          } 
+        />
         </>
       )}
 <div
