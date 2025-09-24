@@ -4,11 +4,11 @@ import "../styles/LandingPage.css";
 
 const SERVICES = [
   { id: "prefs", title: "Place recommendations based on preferences", short: "Place recommendations",
-    desc: "Tell us your city, dates, and what you love (beaches, museums, food markets). We surface the best 5–6 places that match your taste." },
+    desc: "Tell us dates and what you love (beaches, museums, food markets). We surface the best 5–6 places that match your taste." },
   { id: "schedule", title: "Schedule generation that adapts to weather", short: "Schedule generation",
     desc: "We build a balanced day-by-day plan. If it’s sunny, you’ll get outdoor spots at ideal times; if it rains, we switch to indoor picks." },
-  { id: "alerts", title: "Weather alerts and real-time plan adjustments", short: "Weather alerts",
-    desc: "Get timely alerts for rain, heat, or wind and one-click swaps so your plan stays smooth without manual re-planning." },
+  { id: "alerts", title: "Capture your memories with journals and reviews", short: "3. Travel Journal & Reviews",
+    desc: "You can save your travel memories by writing journals, uploading photos, and sharing reviews. Your reviews are public to inspire others, but only you can edit or delete your own. " },
 ];
 
 function ServiceCard({ title, short, desc }) {
