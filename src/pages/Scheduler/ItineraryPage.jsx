@@ -109,6 +109,7 @@ const initialData = {
                     <ItineraryItem
                       key={`${currentDayIndex}-${item.id}`}
                       item={{ ...item, description: firstTwo }}
+                      listNumber={index + 1}
                       onClick={() => {
                         const dateForDay = pageData.weatherForecasts[currentDayIndex]?.day;
                         handleItemClick({ ...item, date: dateForDay });
