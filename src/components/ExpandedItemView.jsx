@@ -1,7 +1,6 @@
 import React from 'react';
 import './ExpandedItemView.css';
 
-// Helper function to return an icon based on the weather condition
 const getWeatherIcon = (condition) => {
   if (!condition) return '❓';
   const cond = condition.toLowerCase();
@@ -29,7 +28,6 @@ function ExpandedItemView({ item, onClose, listNumber }) {
               <span className="eiv-number">{listNumber}</span>
               <h2 className="eiv-title">{item.title}</h2>
 
-              {/* Quick Links next to the title */}
               <div className="eiv-links-inline">
                 {item.websiteUrl && (
                   <a
@@ -57,9 +55,7 @@ function ExpandedItemView({ item, onClose, listNumber }) {
             </div>
             <p className="eiv-hours">{item.openHours}</p>
 
-            {/* Description + Weather Grid */}
             <div className="eiv-desc-weather-grid">
-              {/* Left: Description + Slot */}
                 <div className="eiv-desc-panel">
                 <p className="eiv-description">{item.description}</p>
 
@@ -78,7 +74,6 @@ function ExpandedItemView({ item, onClose, listNumber }) {
                 )}
                 </div>
 
-              {/* Right: Weather */}
               {item.weather && (
                 <div className="eiv-weather-panel">
                   <h3>{item.date ? `${item.date}'s Forecast` : "Weather Forecast"}</h3>

@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 
 const genAI  = new GoogleGenerativeAI("");
 
-const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message...", itineraryContext = "" }) => {
+const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message...", itineraryContext = "", weatherContext = ""}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,9 +27,7 @@ const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message...", itinera
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
-      // CHANGE 2: Create a full prompt including the itinerary context as a system instruction.
-      // This gives the AI the information it needs to answer questions accurately.
-      const systemInstruction = `You are an expert travel assistant. The user has the following itinerary and might ask questions about it. Use this context to provide helpful answers.\n\n--- ITINERARY START ---\n${itineraryContext}\n--- ITINERARY END ---\n\n`;
+      const systemInstruction = `You are an expert travel assistant. The user has the following itinerary and might ask questions about it. Use this context to provide helpful answers.\n\n--- ITINERARY START ---\n${itineraryContext}\n--- ITINERARY END --- --- WEATHER START ---${weatherContext}--- WEATHER END ---\n\n`;
       
       const promptHistory = newMessages.map((msg) => `${msg.role}: ${msg.content}`).join("\n");
       const fullPrompt = systemInstruction + promptHistory;
@@ -37,12 +35,8 @@ const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message...", itinera
       const result = await model.generateContent(fullPrompt);
       const response = result.response;
 
-      // CHANGE 3: The Fix for the Error
-      // Instead of response.text(), access the text directly from the candidate parts.
-      // This is a more reliable way to get the string content and avoids the "Objects are not valid" error.
       const aiReply = response.candidates[0].content.parts[0].text;
       
-      // Add a console log to verify you are getting a string
       console.log("AI Reply Type:", typeof aiReply);
       console.log("AI Reply Content:", aiReply);
 
@@ -52,7 +46,6 @@ const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message...", itinera
 
     } catch (err) {
       console.error("AI Error:", err);
-      // Ensure the error message is also handled correctly
       const updatedMessages = [
         ...newMessages,
         { role: "assistant", content: "Sorry, I couldn't get a response. Please check the console for errors." },

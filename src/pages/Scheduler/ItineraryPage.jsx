@@ -32,6 +32,15 @@ function ItineraryPage() {
     return pageData.fullItinerary.map(formatDay).join('\n\n');
   }, [pageData]);
 
+  const weatherContext = useMemo(() => {
+  if (!pageData || !pageData.weatherForecasts) return "";
+
+  const formatForecast = (forecast) => 
+    `- ${forecast.day}: The temperature will be around ${forecast.temp}.`;
+
+  return "Weather Forecast:\n" + pageData.weatherForecasts.map(formatForecast).join('\n');
+}, [pageData]);
+
   useEffect(() => {
     if (!pageData) return;
 
@@ -215,7 +224,7 @@ const initialData = {
       padding: "10px",
     }}
   >
-    <GeminiChat itineraryContext={itineraryContext} /> 
+    <GeminiChat itineraryContext={itineraryContext} weatherContext={weatherContext} />
   </div>
 </div>
     </>
