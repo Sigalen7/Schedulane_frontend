@@ -81,7 +81,7 @@ function ExpandedItemView({ item, onClose, listNumber }) {
               {/* Right: Weather */}
               {item.weather && (
                 <div className="eiv-weather-panel">
-                  <h3>Today's Forecast</h3>
+                  <h3>{item.date ? `${item.date}'s Forecast` : "Weather Forecast"}</h3>
                   <div className="eiv-forecast-list">
                     {item.weather.split(', ').map((forecastStr, index) => {
                       const parts = forecastStr.match(/(\d{1,2}:\d{2})\s(\w+)\s\(([\d.]+)/);

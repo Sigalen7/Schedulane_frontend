@@ -15,15 +15,13 @@ function ItineraryPage() {
 
   const [pageData, setPageData] = useState(location.state?.itineraryData);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
-  const [selectedItem, setSelectedItem] = useState(null); // New state for selected item
+  const [selectedItem, setSelectedItem] = useState(null);
   const [summaryText, setSummaryText] = useState(pageData?.summaryText || "");
   const [selectedItemNumber, setSelectedItemNumber] = useState(null);
 
-    // Add this entire block to your ItineraryPage component
   const itineraryContext = useMemo(() => {
     if (!pageData || !pageData.fullItinerary) return "";
 
-    // Helper to format a single day's itinerary
     const formatDay = (day) => {
       const items = day.items.map(item => 
         `  - ${item.name}: ${item.description}`
@@ -31,7 +29,6 @@ function ItineraryPage() {
       return `Day ${day.day}:\n${items}`;
     };
 
-    // Combine all days into a single string
     return pageData.fullItinerary.map(formatDay).join('\n\n');
   }, [pageData]);
 
@@ -105,7 +102,6 @@ const initialData = {
             <Card.Body>
               <div className="itinerary-items-container">
                 {currentItinerary.items.map((item, index) => {
-                  // Only truncate description for list view
                   const sentences = item.description.split('. ');
                   const firstTwo = sentences.slice(0, 2).join('. ') + (sentences.length >= 2 ? '.' : '');
 
@@ -113,8 +109,10 @@ const initialData = {
                     <ItineraryItem
                       key={`${currentDayIndex}-${item.id}`}
                       item={{ ...item, description: firstTwo }}
-                      listNumber={index + 1}
-                      onClick={() => handleItemClick(item, index + 1)} 
+                      onClick={() => {
+                        const dateForDay = pageData.weatherForecasts[currentDayIndex]?.day;
+                        handleItemClick({ ...item, date: dateForDay });
+                      }}
                     />
                   );
                 })}
@@ -170,7 +168,6 @@ const initialData = {
         </Row>
       </Container>
 
-      {/* Render the new component conditionally */}
       {selectedItem && (
         <>
           {console.log("Data for expanded view:", selectedItem)}
@@ -199,7 +196,7 @@ const initialData = {
       lineHeight: "1.2",
       color: "#1f2937",
       margin: 0,
-      whiteSpace: "pre-line", // keeps line breaks
+      whiteSpace: "pre-line",
     }}
   >
     HAVE A {"\n"} QUESTION ABOUT {"\n"} THE ITINERARY?{"\n"}ASK!
@@ -208,13 +205,13 @@ const initialData = {
   <div
     style={{
       flexShrink: 0,
-      width: "1000px", // make it wider
-      height: "450px", // make it taller
-      borderRadius: "20px", // rounded corners
-      overflow: "hidden", // ensures chat fits the rounded box
-      boxShadow: "0 6px 16px rgba(0,0,0,0.12)", // nicer shadow
-      background: "#ffffff", // clean white background for chat
-      padding: "10px", // breathing space
+      width: "1000px",
+      height: "450px",
+      borderRadius: "20px", 
+      overflow: "hidden",
+      boxShadow: "0 6px 16px rgba(0,0,0,0.12)",
+      background: "#ffffff",
+      padding: "10px",
     }}
   >
     <GeminiChat itineraryContext={itineraryContext} /> 
