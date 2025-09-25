@@ -1,11 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import apiClient from "../../utils/apiClient";
+import ItineraryDisplay from './ItineraryDisplay';
 
 const Profile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // State for the itinerary data
+  const [itinerary, setItinerary] = useState([]);
+  const [itineraryLoading, setItineraryLoading] = useState(true);
+  const [itineraryError, setItineraryError] = useState(null);
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -23,6 +29,45 @@ const Profile = () => {
     }
   }, [navigate]);
 
+  const fetchItinerary = useCallback(async () => {
+    setItineraryLoading(true);
+    setItineraryError(null);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("User is not authenticated.");
+      }
+      
+      const apiUrl = 'https://tueniuu-database-fetch.hf.space/get-itinerary';
+
+      const response = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        // Handle cases where the response is not JSON (like an HTML error page)
+        const text = await response.text();
+        try {
+            const errorData = JSON.parse(text);
+            throw new Error(errorData.message || 'Failed to fetch itinerary.');
+        } catch (e) {
+            throw new Error(`Server returned a non-JSON response: ${text.slice(0, 100)}`);
+        }
+      }
+
+      const data = await response.json();
+      setItinerary(data);
+
+    } catch (error) {
+      console.error("Error fetching itinerary:", error);
+      setItineraryError(error.message);
+    } finally {
+      setItineraryLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -30,7 +75,8 @@ const Profile = () => {
       return;
     }
     fetchProfile();
-  }, [fetchProfile, navigate]);
+    fetchItinerary();
+  }, [fetchProfile, fetchItinerary, navigate]);
 
   const handleLogout = async () => {
     try {
@@ -52,52 +98,38 @@ const Profile = () => {
     );
   }
 
-
   function usernameFromJWT() {
-      try {
-        const t = localStorage.getItem("token");
-        if (!t) return "";
-        const payload = JSON.parse(atob(t.split(".")[1] || ""));
-        return (
-          payload.username ||
-          payload.user ||
-          payload.name ||
-          payload.given_name ||
-          ""
-        );
-      } catch {
-        return "";
-      }
+    try {
+      const t = localStorage.getItem("token");
+      if (!t) return "";
+      const payload = JSON.parse(atob(t.split(".")[1] || ""));
+      return (
+        payload.username ||
+        payload.user ||
+        payload.name ||
+        payload.given_name ||
+        ""
+      );
+    } catch {
+      return "";
     }
+  }
 
-  const apiUsername =
-    profile?.user?.username ?? 
-    profile?.username ??      
-    "";
-
+  const apiUsername = profile?.user?.username ?? profile?.username ?? "";
   const jwtUsername = usernameFromJWT();
   const cachedUsername = localStorage.getItem("username_hint") || "";
-
   const first = profile?.user?.first_name ?? profile?.first_name ?? "";
-  const last  = profile?.user?.last_name  ?? profile?.last_name  ?? "";
+  const last = profile?.user?.last_name ?? profile?.last_name ?? "";
   const nameFromNames = [first, last].filter(Boolean).join(" ");
-
-  const displayName =
-+  apiUsername || jwtUsername || cachedUsername || nameFromNames || "Traveler";
-  
-
+  const displayName = apiUsername || jwtUsername || cachedUsername || nameFromNames || "Traveler";
   const bio = profile?.bio ?? "—";
   const birthdate = profile?.birthdate ?? "—";
-  const photo =
-    profile?.photo ?? "https://via.placeholder.com/200?text=No+Photo";
+  const photo = profile?.photo ?? "https://via.placeholder.com/200?text=No+Photo";
 
   return (
     <div style={S.container}>
       <div style={S.card}>
-        {/* Top gradient cover */}
         <div style={S.cover} />
-
-        {/* Header bar with actions (replaces the solid blue bar) */}
         <div style={S.actionStrip}>
           <div style={S.titleWrap}>
             <h2 style={S.title}>Profile</h2>
@@ -123,8 +155,6 @@ const Profile = () => {
             </button>
           </div>
         </div>
-
-        {/* Profile header block */}
         <div style={S.headerBlock}>
           <div style={S.avatarWrap}>
             <img src={photo} alt="Profile" style={S.avatar} />
@@ -138,8 +168,9 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Content area */}
+        {/* Content area with corrected structure */}
         <div style={S.content}>
+          {/* "Profile info" card */}
           <div style={S.infoCard}>
             <h3 style={S.sectionTitle}>Profile info</h3>
             <p style={S.bio}>{bio}</p>
@@ -147,20 +178,24 @@ const Profile = () => {
               <span style={S.k}>First name</span>
               <span style={S.v}>{first || "—"}</span>
             </div>
-
             <div style={S.kv}>
               <span style={S.k}>Last name</span>
               <span style={S.v}>{last || "—"}</span>
             </div>
-
-
-
             <div style={S.kv}>
               <span style={S.k}>Birthdate</span>
               <span style={S.v}>{birthdate}</span>
             </div>
-
           </div>
+
+    <div style={{ ...S.infoCard, marginTop: 24 }}>
+      <h3 style={S.sectionTitle}>Your Itineraries 🗺️</h3>
+      {itineraryLoading && <p>Loading your itineraries...</p>}
+      {itineraryError && <p style={{ color: 'red' }}>Error: {itineraryError}</p>}
+      
+      {/* 3. Pass the array to the 'itineraries' prop */}
+      {!itineraryLoading && <ItineraryDisplay itineraries={itinerary} />}
+    </div>
         </div>
       </div>
     </div>
