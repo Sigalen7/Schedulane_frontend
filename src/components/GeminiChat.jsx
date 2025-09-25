@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai@0.11.2"
 import ReactMarkdown from 'react-markdown';
 
-const genAI  = new GoogleGenerativeAI("");
+const genAI  = new GoogleGenerativeAI("AIzaSyCVPCgS_yYhlHiyoZBg7oLGCxRfhLHNC3s");
 
 const GeminiChat = ({ maxMemory = 10, placeholder = "Type a message...", itineraryContext = "", weatherContext = ""}) => {
   const [messages, setMessages] = useState([]);

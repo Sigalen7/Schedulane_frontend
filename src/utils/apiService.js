@@ -53,30 +53,42 @@ const transformApiResponse = (apiData) => {
 export const generateItinerary = async (requestBody) => {
   const API_ENDPOINT = "https://tueniuu-itinerary-recommender-api.hf.space/schedule";
 
+  // << --- THE FIX --- >>
+  // Get the token directly using the key "token"
+  const token = localStorage.getItem('token');
+
+  // Debugging line to confirm the token is found
+  console.log("Attempting to use token from localStorage key 'token':", token);
+
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    // The token from localStorage is just the string, no need to parse JSON
+    headers['Authorization'] = `Bearer ${token}`;
+  } else {
+    console.error("TOKEN NOT FOUND under key 'token'. The request will be forbidden.");
+  }
+
   try {
     const response = await fetch(API_ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
-      // More detailed error logging
       const errorBody = await response.text();
       console.error("API Error Response:", errorBody);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const rawData = await response.json();
-    
-    // Transform the data before returning it to the component
     return transformApiResponse(rawData);
 
   } catch (error) {
     console.error("Failed to generate itinerary:", error);
-    // Return null so the component can handle the error state
     return null;
   }
 };
