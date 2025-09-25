@@ -8,7 +8,6 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // State for the itinerary data
   const [itinerary, setItinerary] = useState([]);
   const [itineraryLoading, setItineraryLoading] = useState(true);
   const [itineraryError, setItineraryError] = useState(null);
@@ -47,7 +46,6 @@ const Profile = () => {
       });
 
       if (!response.ok) {
-        // Handle cases where the response is not JSON (like an HTML error page)
         const text = await response.text();
         try {
             const errorData = JSON.parse(text);
@@ -67,6 +65,37 @@ const Profile = () => {
       setItineraryLoading(false);
     }
   }, []);
+
+    const handleDeleteItinerary = async (itineraryId) => {
+    if (!window.confirm("Are you sure you want to delete this itinerary? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const apiUrl = `https://tueniuu-database-fetch.hf.space/itinerary/${itineraryId}`;
+
+      const response = await fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to delete itinerary.");
+      }
+
+      setItinerary(prevItineraries => 
+        prevItineraries.filter(item => item.id !== itineraryId)
+      );
+
+    } catch (error) {
+      console.error("Error deleting itinerary:", error);
+      alert(`Error: ${error.message}`);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -193,8 +222,12 @@ const Profile = () => {
       {itineraryLoading && <p>Loading your itineraries...</p>}
       {itineraryError && <p style={{ color: 'red' }}>Error: {itineraryError}</p>}
       
-      {/* 3. Pass the array to the 'itineraries' prop */}
-      {!itineraryLoading && <ItineraryDisplay itineraries={itinerary} />}
+      {!itineraryLoading && (
+        <ItineraryDisplay 
+          itineraries={itinerary} 
+          onDelete={handleDeleteItinerary} 
+        />
+      )}
     </div>
         </div>
       </div>

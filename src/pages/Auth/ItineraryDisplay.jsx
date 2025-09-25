@@ -15,8 +15,7 @@ const getBadgeColor = (slot) => {
   return { background: '#F3F4F6', color: '#4B5563' };
 };
 
-const ItineraryDisplay = ({ itineraries }) => {
-  // 1. 🎯 State to track which itineraries are open (using a Set for efficiency)
+const ItineraryDisplay = ({ itineraries, onDelete }) => {
   const [openItineraries, setOpenItineraries] = useState(new Set());
 
   // Effect to open the first itinerary by default when the component loads
@@ -26,7 +25,7 @@ const ItineraryDisplay = ({ itineraries }) => {
     }
   }, [itineraries]);
 
-  // 2. 🎯 Function to handle clicking the header to toggle an itinerary
+  // Function to handle clicking the header to toggle an itinerary
   const handleToggle = (id) => {
     setOpenItineraries(prevOpen => {
       const newOpen = new Set(prevOpen);
@@ -50,13 +49,16 @@ const ItineraryDisplay = ({ itineraries }) => {
         
         return (
           <div key={itinerary.id} style={S.itineraryCard}>
-            {/* 3. 🎯 Clickable header to toggle the view */}
-            <button onClick={() => handleToggle(itinerary.id)} style={S.mainHeaderButton}>
-              <span>🗓️ Itinerary from {new Date(itinerary.created_at).toLocaleDateString()}</span>
-              <span style={S.chevron}>{isOpen ? '▲' : '▼'}</span>
-            </button>
+            <div style={S.headerContainer}>
+              <button onClick={() => handleToggle(itinerary.id)} style={S.mainHeaderButton}>
+                <span>🗓️ Itinerary from {new Date(itinerary.created_at).toLocaleDateString()}</span>
+                <span style={S.chevron}>{isOpen ? '▲' : '▼'}</span>
+              </button>
+              <button onClick={() => onDelete(itinerary.id)} style={S.deleteButton}>
+                Delete
+              </button>
+            </div>
             
-            {/* 4. 🎯 Conditionally render the details only if it's open */}
             {isOpen && (
               <div style={S.contentWrapper}>
                 {itinerary.itinerary_data.scheduled.map((daySchedule) => (
@@ -70,7 +72,6 @@ const ItineraryDisplay = ({ itineraries }) => {
                             {locIndex < arr.length - 1 && <div style={S.timelineLine} />}
                           </div>
                           <div style={S.timelineContent}>
-                            {/* 5. 🎯 Location name is now a clickable link */}
                             {location.naver_url ? (
                               <a href={location.naver_url} target="_blank" rel="noopener noreferrer" style={S.locationLink}>
                                 {location.name}
@@ -104,22 +105,38 @@ const S = {
     marginBottom: '16px',
     background: '#fff',
     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-    overflow: 'hidden', // Ensures content stays within rounded corners
+    overflow: 'hidden',
+  },
+  headerContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    background: '#f9fafb',
+    borderBottom: '1px solid #e5e7eb',
   },
   mainHeaderButton: {
+    flexGrow: 1,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
     padding: '16px 24px',
-    background: '#f9fafb',
+    background: 'none',
     border: 'none',
-    borderBottom: '1px solid #e5e7eb',
     cursor: 'pointer',
     fontSize: '18px',
     fontWeight: '700',
     color: '#111827',
     textAlign: 'left',
+  },
+  deleteButton: {
+    padding: '8px 16px',
+    marginRight: '16px',
+    border: '1px solid #ef4444',
+    background: '#fee2e2',
+    color: '#b91c1c',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '14px',
   },
   chevron: {
     fontSize: '14px',
